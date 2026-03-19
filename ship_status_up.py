@@ -52,7 +52,6 @@ Returns JSON tracking status when provided with a tracking number and access tok
 """
 def fetchTrackingStatus(TrackingNum, accessToken):
 
-    # Fetch tracking numbers here
     # TrackingNum = "499496853570"
 
     # Should probably process a request for each tracking number unless they can be done in bulk
@@ -81,11 +80,6 @@ def fetchTrackingStatus(TrackingNum, accessToken):
         raise SystemExit(e)
 
     return trackingResponse
-
-# Define remaining access time and desired update rate
-accessTokenRemainingTime = 0
-accessToken = None
-updateRate = 60
 
 # NOTE: Will require testing in remote environment
 """
@@ -121,18 +115,25 @@ def fetchOpenOrderTrackingNumbers(engine):
     
     return trackingNumbers
 
-# Loop until break
-while True:
+# ENTRY POINT #
 
-    if accessTokenRemainingTime <= updateRate:
-        accessToken = fetchAuthToken(CLIENT, SECRET)
-        accessTokenRemainingTime = 3600
-        print(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Renewed OAuth Token")
+if __name__ == "__main__":
 
-    # Should grab relevant records here and store in array/dict keying off tracking numbers
-    print(f"Current remaining auth time is {accessTokenRemainingTime} seconds")
-    # Iterate over items in aforementioned record dict, updating database records as we go
+    accessTokenRemainingTime = 0
+    accessToken = None
+    updateRate = 60
 
-    time.sleep(updateRate)
-    accessTokenRemainingTime = accessTokenRemainingTime - updateRate
+    while True:
+
+        if accessTokenRemainingTime <= updateRate:
+            accessToken = fetchAuthToken(CLIENT, SECRET)
+            accessTokenRemainingTime = 3600
+            print(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Renewed OAuth Token")
+
+        # Should grab relevant records here and store in array/dict keying off tracking numbers
+        print(f"Current remaining auth time is {accessTokenRemainingTime} seconds")
+        # Iterate over items in aforementioned record dict, updating database records as we go
+
+        time.sleep(updateRate)
+        accessTokenRemainingTime = accessTokenRemainingTime - updateRate
 
